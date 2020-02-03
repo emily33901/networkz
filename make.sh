@@ -1,5 +1,17 @@
-#!/bin/sh
+#!/bin/bash
+# set cwd to script directory
+cd "${0%/*}"
 
-cd "$(dirname "$0")"
+pushd `dirname $0`
 
-GOOS=js GOARCH=wasm go build -o main.wasm
+./tools/build/create_projects.sh
+
+echo building...
+cd premake/
+make -j4
+
+echo done.
+
+popd
+
+exit
