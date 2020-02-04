@@ -2,3 +2,6 @@ premake/
 .modules/
 .vscode/
 bin/
+build/
+!tools/build/
+emscripten.txt
