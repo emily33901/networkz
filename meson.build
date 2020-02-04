@@ -1,5 +1,30 @@
 project('networkz', 'cpp')
 
+common_args = ['--bind', '-s', 'USE_SDL=2', '-s', 'USE_WEBGL2=1', '-s', 'FULL_ES3=1', '-s', 'ASSERTIONS=1']
+
+# Declare dependencies first
+
+imgui_core = static_library(
+  'imgui',
+  files('external/imgui/imgui.cpp', 
+        'external/imgui/imgui_demo.cpp', 
+        'external/imgui/imgui_draw.cpp', 
+        'external/imgui/imgui_demo.cpp',
+        'external/imgui/imgui_widgets.cpp'),
+  cpp_args : ['-w'] + common_args,
+  install: false
+)
+
+deps = [
+    # ImGui
+    declare_dependency(
+        link_with: imgui_core,
+        include_directories: include_directories('external/imgui/')
+    )
+]
+
+# Networkz files
+
 src = [
     'src/common/platform.hh',
     'src/common/defer.hh',
@@ -14,16 +39,13 @@ src = [
     'src/render/loop.cc',
 
     'src/main.cc',
-
-    # imgui
-    'external/imgui/imgui.cpp', 'external/imgui/imgui_draw.cpp', 'external/imgui/imgui_widgets.cpp', 'external/imgui/imgui_demo.cpp'
 ]
 
-includes = include_directories(['src/', 'external/imgui'])
+includes = include_directories([
+    'src/', 
+])
 
-deps = []
-
-args = ['--bind', '-s', 'USE_SDL=2', '-s', 'USE_WEBGL2=1', '-s', 'FULL_ES3=1', '-s', 'ASSERTIONS=1']
+args = common_args + []
 
 executable('networkz', src, 
            include_directories : includes,
