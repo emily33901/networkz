@@ -1,0 +1,25 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: trzeci/emscripten-slim
+      
+    working_directory: ~/repo
+
+    steps:
+      - run:
+        name: Install dependencies
+        command: pip3 install meson ninja
+      - checkout
+      - run:
+          name: Checkout submodules
+          command: git submodule update --init --recursive
+      - run:
+          name: Generate projects
+          command: |
+            chmod +x tools/build/generate-project.sh
+            tools/build/generate-project.sh
+            
+      - run:
+          name: Build networkz
+          command: cd build && ninja

@@ -1,26 +1,56 @@
 project('networkz', 'cpp')
 
-common_args = ['--bind', '-s', 'USE_SDL=2', '-s', 'USE_WEBGL2=1', '-s', 'FULL_ES3=1', '-s', 'ASSERTIONS=1']
+common_args = ['--std=c++17', '--bind', '-s', 'USE_SDL=2', '-s', 'USE_WEBGL2=1', '-s', 'FULL_ES3=1', '-s', 'ASSERTIONS=1']
+
+dep_compile_args = ['-w'] + common_args
 
 # Declare dependencies first
 
 imgui_core = static_library(
-  'imgui',
-  files('external/imgui/imgui.cpp', 
+    'imgui',
+    files(
+        'external/imgui/imgui.cpp', 
         'external/imgui/imgui_demo.cpp', 
         'external/imgui/imgui_draw.cpp', 
         'external/imgui/imgui_demo.cpp',
-        'external/imgui/imgui_widgets.cpp'),
-  cpp_args : ['-w'] + common_args,
-  install: false
+        'external/imgui/imgui_widgets.cpp',
+    ),
+    cpp_args: dep_compile_args,
+    link_args: common_args,
+    install: false,
+    pic: true,
+)
+
+imgui_node_editor = static_library(
+    'imgui_node_editor',
+    files(
+        'external/imgui-node-editor/NodeEditor/Source/crude_json.cpp',
+        'external/imgui-node-editor/NodeEditor/Source/imgui_canvas.cpp',
+        'external/imgui-node-editor/NodeEditor/Source/imgui_node_editor_api.cpp',
+        'external/imgui-node-editor/NodeEditor/Source/imgui_node_editor.cpp',
+    ),
+    include_directories: include_directories(
+        'external/imgui-node-editor/NodeEditor/Include',
+        'external/imgui'
+    ),
+    cpp_args: dep_compile_args,
+    link_args: common_args,
+    install: false,
+    pic: true,
 )
 
 deps = [
     # ImGui
     declare_dependency(
         link_with: imgui_core,
-        include_directories: include_directories('external/imgui/')
-    )
+        include_directories: include_directories('external/imgui')
+    ),
+
+    # Node editor
+    declare_dependency(
+        link_with: imgui_node_editor,
+        include_directories: include_directories('external/imgui-node-editor/NodeEditor/Include')
+    ),
 ]
 
 # Networkz files

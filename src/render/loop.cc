@@ -11,7 +11,11 @@
 #include "imgui/opengl.hh"
 #include "imgui/platform.hh"
 
+#include "imgui_node_editor.h"
+
 // TODO cleanup
+
+namespace ed = ax::NodeEditor;
 
 namespace render {
 
@@ -45,7 +49,7 @@ extern SDL_GLContext g_GLContext;
 // Our state (make them static = more or less global) as a convenience to keep the example terse.
 static bool   show_demo_window    = true;
 static bool   show_another_window = false;
-static ImVec4 clear_color         = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+static ImVec4 clear_color         = ImVec4(0.1f, 0.1f, 0.11f, 1.00f);
 
 void loop() {
     ImGuiIO &io = ImGui::GetIO();
@@ -76,7 +80,7 @@ void loop() {
         static float f       = 0.0f;
         static int   counter = 0;
 
-        ImGui::Begin("Hello, world!"); // Create a window called "Hello, world!" and append into it.
+        ImGui::Begin("Hello, networkz!"); // Create a window called "Hello, world!" and append into it.
 
         ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
         ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
@@ -100,6 +104,30 @@ void loop() {
         ImGui::Text("Hello from another window!");
         if (ImGui::Button("Close Me"))
             show_another_window = false;
+
+        static ed::EditorContext *context = ed::CreateEditor();
+        ed::SetCurrentEditor(context);
+
+        ed::Begin("My Editor", {500, 500});
+
+        int uniqueId = 1;
+
+        // Start drawing nodes.
+        ed::BeginNode(uniqueId++);
+        ImGui::Text("Node A");
+        ed::BeginPin(uniqueId++, ed::PinKind::Input);
+        ImGui::Text("-> In");
+        ed::EndPin();
+        ImGui::SameLine();
+        ed::BeginPin(uniqueId++, ed::PinKind::Output);
+        ImGui::Text("Out ->");
+        ed::EndPin();
+        ed::EndNode();
+
+        ed::End();
+
+        ed::SetCurrentEditor(nullptr);
+
         ImGui::End();
     }
 

@@ -14,6 +14,10 @@
 #include "imgui/opengl.hh"
 #include "imgui/platform.hh"
 
+#include "imgui_node_editor.h"
+
+namespace ed = ax::NodeEditor;
+
 namespace render {
 
 // Emscripten requires to have full control over the main loop. We're going to store our SDL book-keeping variables globally.
