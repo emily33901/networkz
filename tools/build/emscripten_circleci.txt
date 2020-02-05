@@ -1,7 +1,7 @@
 [binaries]
-c = '/emsdk_portable/upstream/emscripten/emcc'
-cpp = '/emsdk_portable/upstream/emscripten/em++'
-ar = '/emsdk_portable/upstream/emscripten/emar'
+c = '/emsdk_portable/upstream/emscripten/sdk/emcc'
+cpp = '/emsdk_portable/upstream/emscripten/sdk/em++'
+ar = '/emsdk_portable/upstream/emscripten/sdk/emar'
 #exe_wrapper = 'node'
 
 [properties]
