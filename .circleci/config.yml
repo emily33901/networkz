@@ -9,7 +9,10 @@ jobs:
     steps:
       - run:
           name: Install dependencies
-          command: python3 -m pip install meson ninja
+          command: |
+            apt-get update -qq
+            apt-get install -y python3-setuptools python3-wheel
+            python3 -m pip install meson ninja
       - checkout
       - run:
           name: Checkout submodules
