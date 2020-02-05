@@ -18,6 +18,9 @@ jobs:
           name: Checkout submodules
           command: git submodule update --init --recursive
       - run:
+        name: Copy emscripten file
+        command: cp tools/build/emscripten_circleci.txt emscripten.txt
+      - run:
           name: Generate projects
           command: |
             chmod +x tools/build/generate-project.sh
