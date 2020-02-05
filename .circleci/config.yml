@@ -9,7 +9,7 @@ jobs:
     steps:
       - run:
           name: Install dependencies
-          command: pip3 install meson ninja
+          command: python3 -m pip install meson ninja
       - checkout
       - run:
           name: Checkout submodules
