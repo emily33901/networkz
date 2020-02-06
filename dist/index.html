@@ -59,14 +59,18 @@
             totalDependencies: 0,
             monitorRunDependencies: function (left) { }
         };
-        window.addEventListener('resize', _resizeCanvas, false);
         function _resizeCanvas() {
-            document.getElementById('canvas').width = window.innerWidth;
-            document.getElementById('canvas').height = window.innerHeight;
+            document.getElementById('canvas').width = window.innerWidth * window.devicePixelRatio;
+            document.getElementById('canvas').height = window.innerHeight * window.devicePixelRatio;
+
+            document.getElementById('canvas').style.width = window.innerWidth;
+            document.getElementById('canvas').style.height = window.innerHeight;
         }
+        window.addEventListener('resize', _resizeCanvas, false);
+        //setInterval(_resizeCanvas, 500);
 
     </script>
-    <script async type="text/javascript" src="@exe_name@.js"></script>
+    <script async type="text/javascript" src="meson-out/@exe_name@.js"></script>
 </body>
 
 </html>

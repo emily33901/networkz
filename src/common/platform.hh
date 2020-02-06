@@ -61,17 +61,5 @@ using iptr = std::intptr_t;
 
 // Nicer keywords for optional
 #define Option std::optional
-#define None std::nullopt
+#define None() std::nullopt
 #define Some(v) std::make_optional(v)
-
-template <typename std::optional<typename T>>
-using OptionalInternal = T;
-
-#define MatchOption(var, onSome, onNone) \
-    if (var.has_value()) {               \
-        const auto &var = *var;          \
-        onSome;                          \
-    } else {                             \
-        onNone;                          \
-    }                                    \
-    }

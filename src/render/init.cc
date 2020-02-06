@@ -1,6 +1,6 @@
 #include "render.hh"
 
-#include <platform.hh>
+#include "common/platform.hh"
 
 // TODO cleanup this file
 
@@ -27,23 +27,23 @@ namespace render {
 SDL_Window *  window    = NULL;
 SDL_GLContext glContext = NULL;
 
-Option<SDL_Window *> CreateSDLWindow() {
+Option<SDL_Window *> CreateWindow() {
     // Try to init SDL
     if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
         printf("Error: %s\n", SDL_GetError());
-        return None;
+        return None();
     }
 
     SDL_DisplayMode current;
     SDL_GetCurrentDisplayMode(0, &current);
 
-    SDL_WindowFlags window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
-    auto            window       = SDL_CreateWindow("Networkz", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
+    auto window_flags = (SDL_WindowFlags)(SDL_WINDOW_OPENGL | SDL_WINDOW_RESIZABLE | SDL_WINDOW_ALLOW_HIGHDPI);
+    auto window       = SDL_CreateWindow("Networkz", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 1280, 720, window_flags);
 
     return Some(window);
 }
 
-std::optional<SDL_GLContext> CreateGLContext() {
+Option<SDL_GLContext> CreateGLContext(SDL_Window *window) {
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_FLAGS, 0);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_PROFILE_MASK, SDL_GL_CONTEXT_PROFILE_ES);
     SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 2);
@@ -54,33 +54,27 @@ std::optional<SDL_GLContext> CreateGLContext() {
     SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 24);
     SDL_GL_SetAttribute(SDL_GL_STENCIL_SIZE, 8);
 
-    auto context = SDL_GL_CreateContext(g_Window);
+    auto context = SDL_GL_CreateContext(window);
 
-    if (context != nullptr) {
-        return Some(context);
-    }
+    if (context != nullptr) return Some(context);
 
     fprintf(stderr, "Failed to initialize WebGL context!\n");
 
-    return None;
+    return None();
 }
 
 bool Init() {
     // Setup SDL
-    if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_TIMER | SDL_INIT_GAMECONTROLLER) != 0) {
-        printf("Error: %s\n", SDL_GetError());
-        return false;
-    }
+    window = CreateWindow().value();
 
     // For the browser using Emscripten, we are going to use WebGL1 with GL ES2. See the Makefile. for requirement details.
     // It is very likely the generated file won't work in many browsers. Firefox is the only sure bet, but I have successfully
     // run this code on Chrome for Android for example.
-    const char *glsl_version = "#version 100";
+    auto glsl_version = "#version 100";
     //const char* glsl_version = "#version 300 es";
 
-    if (!g_GLContext) {
-        return false;
-    }
+    glContext = CreateGLContext(window).value();
+
     SDL_GL_SetSwapInterval(1); // Enable vsync
 
     // Setup Dear ImGui context
@@ -104,7 +98,7 @@ bool Init() {
     //ImGui::StyleColorsClassic();
 
     // Setup Platform/Renderer bindings
-    ImGui_ImplSDL2_InitForOpenGL(g_Window, g_GLContext);
+    ImGui_ImplSDL2_InitForOpenGL(window, glContext);
     ImGui_ImplOpenGL3_Init(glsl_version);
 
     // Fonts loading

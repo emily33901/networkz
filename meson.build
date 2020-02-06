@@ -66,7 +66,8 @@ src = [
 
     'src/render/render.hh',
     'src/render/init.cc',
-    'src/render/loop.cc',
+    'src/render/frame.cc',
+    'src/render/js.cc',
 
     'src/main.cc',
 ]

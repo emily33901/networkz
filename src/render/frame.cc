@@ -1,3 +1,6 @@
+#include "render.hh"
+
+#include "common/platform.hh"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -19,17 +22,15 @@ namespace ed = ax::NodeEditor;
 
 namespace render {
 
-extern SDL_Window *  g_Window;
-extern SDL_GLContext g_GLContext;
+extern SDL_Window *  window;
+extern SDL_GLContext glContext;
 
 // Our state (make them static = more or less global) as a convenience to keep the example terse.
 static bool   show_demo_window    = true;
 static bool   show_another_window = false;
 static ImVec4 clear_color         = ImVec4(0.1f, 0.1f, 0.11f, 1.00f);
 
-void Frame() {
-    ImGuiIO &io = ImGui::GetIO();
-
+void ProcessEvents() {
     // Poll and handle events (inputs, window resize, etc.)
     // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
     // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application.
@@ -40,12 +41,40 @@ void Frame() {
         ImGui_ImplSDL2_ProcessEvent(&event);
         // Capture events here, based on io.WantCaptureMouse and io.WantCaptureKeyboard
     }
+}
 
+void BeginFrame() {
     // Start the Dear ImGui frame
     ImGui_ImplOpenGL3_NewFrame();
-    ImGui_ImplSDL2_NewFrame(g_Window);
+    ImGui_ImplSDL2_NewFrame(window);
+
+    ProcessEvents();
 
     ImGui::NewFrame();
+}
+
+void EndFrame() {
+
+    ImGuiIO &io = ImGui::GetIO();
+
+    // Rendering
+    auto ratio = render::DevicePixelRatio();
+
+    SDL_SetWindowSize(window, render::WindowWidth() * ratio, render::WindowHeight() * ratio);
+    //resizeCanvas();
+
+    ImGui::Render();
+    SDL_GL_MakeCurrent(window, glContext);
+    glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
+    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
+    glClear(GL_COLOR_BUFFER_BIT);
+    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+    SDL_GL_SwapWindow(window);
+}
+
+void Frame() {
+
+    BeginFrame();
 
     // 1. Show the big demo window (Most of the sample code is in ImGui::ShowDemoWindow()! You can browse its code to learn more about Dear ImGui!).
     if (show_demo_window)
@@ -107,20 +136,6 @@ void Frame() {
         ImGui::End();
     }
 
-    int width  = canvas_get_width();
-    int height = canvas_get_height();
-
-    // Rendering
-
-    SDL_SetWindowSize(g_Window, width, height);
-    resizeCanvas();
-
-    ImGui::Render();
-    SDL_GL_MakeCurrent(g_Window, g_GLContext);
-    glViewport(0, 0, (int)io.DisplaySize.x, (int)io.DisplaySize.y);
-    glClearColor(clear_color.x, clear_color.y, clear_color.z, clear_color.w);
-    glClear(GL_COLOR_BUFFER_BIT);
-    ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-    SDL_GL_SwapWindow(g_Window);
+    EndFrame();
 }
 } // namespace render
