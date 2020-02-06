@@ -1,6 +1,13 @@
 #pragma once
 
 namespace render {
-bool init();
-void loop();
+
+// Singleton for rendering
+
+int CanvasWidth();
+int CanvasHeight();
+
+bool Init();
+
+void Frame();
 }

@@ -19,30 +19,6 @@ namespace ed = ax::NodeEditor;
 
 namespace render {
 
-#ifdef __EMSCRIPTEN__
-EM_JS(int, canvas_get_width, (), {
-    return Module.canvas.width;
-});
-
-EM_JS(int, canvas_get_height, (), {
-    return Module.canvas.height;
-});
-
-EM_JS(void, resizeCanvas, (), {
-    _resizeCanvas();
-});
-#else
-int canvas_get_width() {
-    return 1280;
-}
-int canvas_get_height() {
-    return 720;
-}
-
-void resizeCanvas() {
-}
-#endif
-
 extern SDL_Window *  g_Window;
 extern SDL_GLContext g_GLContext;
 
@@ -51,7 +27,7 @@ static bool   show_demo_window    = true;
 static bool   show_another_window = false;
 static ImVec4 clear_color         = ImVec4(0.1f, 0.1f, 0.11f, 1.00f);
 
-void loop() {
+void Frame() {
     ImGuiIO &io = ImGui::GetIO();
 
     // Poll and handle events (inputs, window resize, etc.)
