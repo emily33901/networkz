@@ -69,6 +69,9 @@ src = [
     'src/render/frame.cc',
     'src/render/js.cc',
 
+    'src/filesystem/filesystem.hh',
+    'src/filesystem/filesystem.cc',
+
     'src/main.cc',
 ]
 
