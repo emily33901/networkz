@@ -1,1 +1,1 @@
-meson --cross-file=emscripten.txt --wipe build
+meson --cross-file=emscripten.txt build

@@ -1,11 +1,10 @@
 [binaries]
-c = '/emsdk_portable/upstream/emscripten/sdk/emcc'
-cpp = '/emsdk_portable/upstream/emscripten/sdk/emcc'
-ar = '/emsdk_portable/upstream/emscripten/sdk/emar'
+c = '/emsdk_portable/emscripten/sdk/emcc'
+cpp = '/emsdk_portable/emscripten/sdk/emcc'
+ar = '/emsdk_portable/emscripten/sdk/emar'
 #exe_wrapper = 'node'
 
 [properties]
-root = '/emsdk_portable/upstream/system'
 c_args = ['-s', 'WASM=1', '-O2']
 c_link_args = ['-s', 'WASM=1','-O2']
 cpp_args = ['-s', 'WASM=1','-O2']

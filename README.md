@@ -6,6 +6,8 @@ Riverbed replacement.
 
 ```sh
 
+> git submodule update --init --recursive
+
 # First - copy tools/build/emscripten-reference.txt -> tools/build/emscripten.txt
 # and modify it so that it points at your emscripten install
 
