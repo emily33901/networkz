@@ -335,7 +335,7 @@ void ImGui_ImplSDL2_NewFrame(SDL_Window *window) {
     static Uint64 frequency    = SDL_GetPerformanceFrequency();
     Uint64        current_time = SDL_GetPerformanceCounter();
     io.DeltaTime               = g_Time > 0 ? (float)((double)(current_time - g_Time) / frequency) : (float)(1.0f / 60.0f);
-    if (io.DeltaTime < 0) io.DeltaTime = (float)(1.0f / 60.0f);
+    if (io.DeltaTime <= 0) io.DeltaTime = (float)(1.0f / 60.0f);
 
     g_Time = current_time;
 

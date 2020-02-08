@@ -58,7 +58,7 @@ void EndFrame() {
     ImGuiIO &io = ImGui::GetIO();
 
     // Rendering
-    auto ratio = render::DevicePixelRatio();
+    auto ratio = emscripten_get_device_pixel_ratio();
 
     SDL_SetWindowSize(window, render::WindowWidth() * ratio, render::WindowHeight() * ratio);
     //resizeCanvas();
@@ -86,6 +86,7 @@ void Frame() {
         static int   counter = 0;
 
         ImGui::Begin("Hello, networkz!"); // Create a window called "Hello, world!" and append into it.
+        Defer(ImGui::End());
 
         ImGui::Text("This is some useful text.");          // Display some text (you can use a format strings too)
         ImGui::Checkbox("Demo Window", &show_demo_window); // Edit bools storing our window open/close state
@@ -100,12 +101,12 @@ void Frame() {
         ImGui::Text("counter = %d", counter);
 
         ImGui::Text("Application average %.3f ms/frame (%.1f FPS)", 1000.0f / ImGui::GetIO().Framerate, ImGui::GetIO().Framerate);
-        ImGui::End();
     }
 
     // 3. Show another simple window.
     if (show_another_window) {
-        ImGui::Begin("Another Window", &show_another_window); // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+        ImGui::Begin("Another Window", &show_another_window);
+        Defer(ImGui::End());
         ImGui::Text("Hello from another window!");
         if (ImGui::Button("Close Me"))
             show_another_window = false;
@@ -132,8 +133,6 @@ void Frame() {
         ed::End();
 
         ed::SetCurrentEditor(nullptr);
-
-        ImGui::End();
     }
 
     EndFrame();

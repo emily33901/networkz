@@ -1,0 +1,5 @@
+# Kinda test toml file for network loading
+
+name = "networkz"
+version = "0.0.1"
+compile_date = "@compileDate@"

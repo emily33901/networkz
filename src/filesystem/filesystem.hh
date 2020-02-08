@@ -2,6 +2,7 @@
 
 #include "common/platform.hh"
 
+#include <functional>
 #include <string>
 
 // Wrapper for filesystem operations
@@ -14,11 +15,9 @@ void Frame();
 
 // Async file operations
 
-using FileId = u32;
+// TODO probably std::function this
+using FileLoadFn = std::function<void(const std::string &path, Option<std::string> buffer)>;
 
-Option<FileId>      Lookup(const std::string &path);
-FileId              Request(const std::string &path);
-Option<std::string> Contents(FileId f);
-void                Dispose(FileId f);
+void Request(std::string path, FileLoadFn callback);
 
 } // namespace filesystem

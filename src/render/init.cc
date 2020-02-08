@@ -1,10 +1,11 @@
-#include "render.hh"
-
 #include "common/platform.hh"
+
+#include "filesystem/filesystem.hh"
+#include "render.hh"
 
 // TODO cleanup this file
 
-#ifdef __EMSCRIPTEN__
+#if platform_emscripten()
 #include <emscripten.h>
 
 #include <SDL.h>
@@ -103,8 +104,22 @@ bool Init() {
 
     // Fonts loading
 #ifndef IMGUI_DISABLE_FILE_FUNCTIONS
+    auto loadFont = [&io](const char *path) {
+        filesystem::Request(path, [io](auto path, auto text) {
+            if (text == None()) {
+                printf("Unable to load font %s\n", path.c_str());
+            } else {
+                io.Fonts->AddFontFromMemoryTTF((void *)text->c_str(), text->size(), 17);
+
+                ImGui_ImplOpenGL3_CreateFontsTexture();
+            }
+        });
+    };
     // TODO load fonts from memory results from a fetch()
     // These should probably be got from a google fonts cdn or similar
+    loadFont("https://cdn.jsdelivr.net/npm/roboto-mono-webfont@2.0.986/fonts/RobotoMono-Regular.ttf");
+    // loadFont("https://cdn.jsdelivr.net/npm/roboto-mono-webfont@2.0.986/fonts/RobotoMono-Thin.ttf");
+    // loadFont("https://cdn.jsdelivr.net/npm/roboto-mono-webfont@2.0.986/fonts/RobotoMono-Bold.ttf");
 #endif
 
     return true;

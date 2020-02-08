@@ -23,6 +23,8 @@ public:
 
     // What files were inherited or similar
     std::vector<std::string> inherited;
+
+    virtual void Frame();
 };
 
 } // namespace node

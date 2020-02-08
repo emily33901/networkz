@@ -4,3 +4,6 @@
 [submodule "external/imgui-node-editor"]
 	path = external/imgui-node-editor
 	url = https://github.com/thedmd/imgui-node-editor
+[submodule "external/cpptoml"]
+	path = external/cpptoml
+	url = https://github.com/skystrife/cpptoml

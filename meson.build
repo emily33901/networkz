@@ -51,6 +51,10 @@ deps = [
         link_with: imgui_node_editor,
         include_directories: include_directories('external/imgui-node-editor/NodeEditor/Include')
     ),
+
+    declare_dependency(
+        include_directories: include_directories('external/cpptoml/include')
+    )
 ]
 
 # Networkz files
@@ -89,9 +93,16 @@ executable('networkz', src,
            cpp_args: args,
            link_args: args)
 
+time = run_command('python', 'tools/build/time.py').stdout().strip()
+
 # Configure index.html
 conf_data = configuration_data()
 conf_data.set('exe_name', 'networkz')
-configure_file(input : 'dist/index.html',
-               output : 'index.html',
+conf_data.set('compileDate', time)
+configure_file(input: 'dist/index.html',
+               output: 'index.html',
+               configuration : conf_data)
+
+configure_file(input: 'dist/application.toml',
+               output: 'application.toml',
                configuration : conf_data)

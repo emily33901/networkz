@@ -1,0 +1,15 @@
+[file]
+name="base"
+desc="Basic attributes that all nodes have"
+inherits = [
+    
+]
+
+# Any attributes that exist in this file are known to exist for all nodes
+
+[attrs]
+name = ""
+xpos = 0
+ypos = 0
+icon = ""
+creation_date = 0
