@@ -9,7 +9,7 @@ inherits = [
 
 [attrs]
 name = ""
-xpos = 0
-ypos = 0
+xpos = 0.0
+ypos = 0.0
 icon = ""
 creation_date = 0

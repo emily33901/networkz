@@ -76,6 +76,10 @@ src = [
     'src/filesystem/filesystem.hh',
     'src/filesystem/filesystem.cc',
 
+    
+    'src/test/test.cc',
+    'src/test/test.cc',
+
     'src/main.cc',
 ]
 

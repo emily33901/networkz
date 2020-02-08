@@ -2,6 +2,7 @@
 
 #include "filesystem/filesystem.hh"
 #include "render/render.hh"
+#include "test/test.hh"
 
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
@@ -42,6 +43,7 @@ int main() {
 
     InitSubsystem(filesystem);
     InitSubsystem(render);
+    InitSubsystem(test);
 
     if (success) {
         // Set our loop function first because its needed later on

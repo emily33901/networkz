@@ -2,6 +2,8 @@
 
 #include "common/platform.hh"
 
+#include "test/test.hh"
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 
@@ -134,6 +136,8 @@ void Frame() {
 
         ed::SetCurrentEditor(nullptr);
     }
+
+    test::Frame();
 
     EndFrame();
 }

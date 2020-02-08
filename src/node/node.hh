@@ -3,7 +3,6 @@
 // Top level node definition
 
 #include <string>
-
 #include <vector>
 
 namespace node {
@@ -24,7 +23,11 @@ public:
     // What files were inherited or similar
     std::vector<std::string> inherited;
 
+    // For rendering
     virtual void Frame();
+
+    // For thinking
+    virtual void Think();
 };
 
 } // namespace node
