@@ -60,24 +60,21 @@ deps = [
 # Networkz files
 
 src = [
-    'src/common/platform.hh',
-    'src/common/defer.hh',
-    'src/common/precompiled.hh', 'src/common/precompiled.cc',
+    'src/common/precompiled.cc',
 
-    'src/render/imgui/opengl.hh', 'src/render/imgui/opengl.cc',
-    'src/render/imgui/platform.hh','src/render/imgui/platform.cc',
+    'src/render/imgui/opengl.cc',
+    'src/render/imgui/platform.cc',
 
-
-    'src/render/render.hh',
     'src/render/init.cc',
     'src/render/frame.cc',
     'src/render/js.cc',
 
-    'src/filesystem/filesystem.hh',
     'src/filesystem/filesystem.cc',
 
-    
-    'src/test/test.cc',
+    'src/connections/workspace.cc',
+
+    'src/node/node.cc',
+
     'src/test/test.cc',
 
     'src/main.cc',
@@ -110,3 +107,5 @@ configure_file(input: 'dist/index.html',
 configure_file(input: 'dist/application.toml',
                output: 'application.toml',
                configuration : conf_data)
+
+run_command('python', 'tools/build/copy.py', 'dist/nodes', 'build/nodes')

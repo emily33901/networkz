@@ -4,6 +4,9 @@
 #include "render/render.hh"
 #include "test/test.hh"
 
+#include "connections/connections.hh"
+#include "main.hh"
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 #endif
@@ -45,8 +48,13 @@ int main() {
     InitSubsystem(render);
     InitSubsystem(test);
 
+    workspace::globalWorkspace = new workspace::Workspace();
+
     if (success) {
         // Set our loop function first because its needed later on
         emscripten_set_main_loop(Frame, 0, true);
     }
 }
+
+// Temp global state stuff
+workspace::Workspace *workspace::globalWorkspace;

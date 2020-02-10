@@ -1,0 +1,16 @@
+[file]
+name="test2"
+desc="Test node 2"
+inherits = [
+    
+]
+
+[pins]
+inputs = [
+    ["in1", "basic"],
+    ["in2", "basic"],
+    ["in3", "basic"],
+]
+outputs = [
+    ["out1", "basic"],
+]

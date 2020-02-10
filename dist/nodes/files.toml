@@ -3,6 +3,10 @@
 # and generates this on demand or whenever its rebuilt or similar
 # therefore removing the need to have this file hardcoded
 
+# This is needed because of how the emscripten_wget and urls works
+
 files = [
     "base.toml",
+    "test1.toml",
+    "test2.toml",
 ]

@@ -1,0 +1,6 @@
+# This file defines all the possible pintypes
+
+# TODO add more and remove these temporary ones
+types = [
+    "basic"
+]

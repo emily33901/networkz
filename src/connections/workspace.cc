@@ -1,15 +1,15 @@
 #include "connections.hh"
 
 namespace workspace {
-Option<uptr> Workspace::NodeLookup(u32 index) {
-    if (idMap.find(index) == idMap.end) {
+Option<node::Node *> Workspace::NodeLookup(u32 index) {
+    if (idMap.find(index) == idMap.end()) {
         return None();
     } else {
         return Some(idMap.at(index));
     }
 }
 
-Option<u32> Workspace::IdLookup(uptr ptr) {
+Option<u32> Workspace::IdLookup(node::Node *ptr) {
     bool flag = false;
     u32  id;
     for (auto x : idMap) {
@@ -26,7 +26,7 @@ Option<u32> Workspace::IdLookup(uptr ptr) {
     }
 }
 
-Option<u32> Workspace::AddNode(std::pair<u32, uptr> nodeToAdd) {
+Option<u32> Workspace::AddNode(std::pair<u32, node::Node *> nodeToAdd) {
     auto responsePair = idMap.insert(nodeToAdd);
 
     if (responsePair.second) {
@@ -37,7 +37,7 @@ Option<u32> Workspace::AddNode(std::pair<u32, uptr> nodeToAdd) {
 }
 
 Option<bool> Workspace::RemoveNode(u32 index) {
-    if (idMap.find(index) == idMap.end) {
+    if (idMap.find(index) == idMap.end()) {
         return None();
     } else {
         idMap.erase(index);
@@ -45,7 +45,7 @@ Option<bool> Workspace::RemoveNode(u32 index) {
     }
 }
 
-Option<bool> Workspace::RemoveNode(uptr nodeToRemove) {
+Option<bool> Workspace::RemoveNode(node::Node *nodeToRemove) {
     auto nodeId = IdLookup(nodeToRemove);
 
     if (nodeId == None()) {
@@ -80,7 +80,7 @@ Option<u32> Workspace::CheckForConnection(u32 index1, u32 index2) {
     }
 }
 
-Option<u32> Workspace::CheckForConnection(uptr node1, uptr node2) {
+Option<u32> Workspace::CheckForConnection(node::Node *node1, node::Node *node2) {
     bool flag     = false;
     u32  returnId = 0;
     u32  index1   = *IdLookup(node1);

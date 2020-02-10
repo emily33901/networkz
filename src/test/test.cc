@@ -1,5 +1,7 @@
 #include "common/platform.hh"
 
+#include "main.hh"
+
 #ifdef __EMSCRIPTEN__
 #include <emscripten.h>
 
@@ -10,11 +12,9 @@
 
 #include "imgui.h"
 
-#include "imgui_node_editor.h"
+#include "common/nodeeditor.hh"
 
 // TODO cleanup
-
-namespace ed = ax::NodeEditor;
 
 namespace test {
 
