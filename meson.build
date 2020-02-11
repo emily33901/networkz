@@ -77,6 +77,8 @@ src = [
 
     'src/test/test.cc',
 
+    'src/console/console.cc',
+
     'src/main.cc',
 ]
 

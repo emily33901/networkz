@@ -1,5 +1,6 @@
 #include <cstdio>
 
+#include "console/console.hh"
 #include "filesystem/filesystem.hh"
 #include "render/render.hh"
 #include "test/test.hh"
@@ -47,6 +48,8 @@ int main() {
     InitSubsystem(filesystem);
     InitSubsystem(render);
     InitSubsystem(test);
+    InitSubsystem(node::factory);
+    InitSubsystem(console);
 
     workspace::globalWorkspace = new workspace::Workspace();
 

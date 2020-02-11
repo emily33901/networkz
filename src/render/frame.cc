@@ -2,6 +2,7 @@
 
 #include "common/platform.hh"
 
+#include "console/console.hh"
 #include "test/test.hh"
 
 #ifdef __EMSCRIPTEN__
@@ -138,6 +139,7 @@ void Frame() {
     }
 
     test::Frame();
+    console::Frame();
 
     EndFrame();
 }

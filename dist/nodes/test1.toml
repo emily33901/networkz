@@ -14,4 +14,7 @@ outputs = [
     ["1", "basic"],
     ["2", "basic"],
     ["3", "basic"],
-] 
+]
+
+[attrs]
+testAttr = true

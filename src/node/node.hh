@@ -26,6 +26,8 @@ void           Destroy(Node *n);
 class Attribute {
 public:
     std::string key;
+
+    // TODO this value is going to need to be slightly more complex
     std::string value;
 };
 
@@ -48,6 +50,8 @@ public:
 
     // What files were inherited or similar
     std::vector<std::string> inherited;
+
+    std::unordered_map<std::string, ed::PinId>;
 
     // For rendering
     virtual void Frame();

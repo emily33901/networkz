@@ -2,21 +2,74 @@
 
 #include "common/toml.hh"
 
+#include "console/console.hh"
 #include "filesystem/filesystem.hh"
 
 namespace node {
+
+Node::Node() {
+}
+
+Node::~Node() {
+}
+
+Node *Node::Clone() {
+    // This is a low level clone that needs to be wrapped by the workspace or similar
+
+    auto newNode = factory::Create(name);
+    auto n       = *newNode;
+
+    n->name       = name;
+    n->desc       = desc;
+    n->file       = file;
+    n->inherited  = inherited;
+    n->attributes = attributes;
+    n->id         = id;
+
+    return n;
+}
+
+void Node::Frame() {
+}
+
+void Node::Think() {
+}
 
 namespace factory {
 std::unordered_map<std::string, Node *> nodeTemplates;
 
 Node *baseTemplate = nullptr;
 
+Node *InheritInternal(Node *n, Node *base) {
+    // Inherit attributes
+    for (const auto &attr : base->attributes) {
+        if (std::find_if(n->attributes.begin(), n->attributes.end(),
+                         [&attr](const auto &a) { return a.key == attr.key; }) == n->attributes.end()) {
+            n->attributes.push_back(attr);
+        }
+    }
+
+    n->inherited.push_back(base->name);
+
+    // TODO pins (do we even want to inherit them?)
+
+    return n;
+}
+
+Option<Node *> Inherit(Node *n, const std::string &name) {
+    auto v = nodeTemplates.find(name);
+
+    if (v != nodeTemplates.end()) return Some(InheritInternal(n, v->second));
+
+    return None();
+}
+
 const std::string &ApplyTemplate(Node *n, const std::string &text) {
     const auto table = cpptoml::parse_text(text);
 
-    const auto name     = table->get_qualified_as<std::string>("file.name");
-    const auto desc     = table->get_qualified_as<std::string>("file.desc");
-    const auto inherits = table->get_array_of<std::string>("file.inherits").value_or(std::initializer_list<std::string>{});
+    const auto name     = table->template get_qualified_as<std::string>("file.name");
+    const auto desc     = table->template get_qualified_as<std::string>("file.desc");
+    const auto inherits = table->template get_array_of<std::string>("file.inherits").value_or(std::initializer_list<std::string>{});
 
     n->name = *name;
     n->desc = *desc;
@@ -26,12 +79,21 @@ const std::string &ApplyTemplate(Node *n, const std::string &text) {
     for (const auto &x : inherits) Inherit(n, x);
 
     // TODO pins & attrs
+
+    const auto attrs = table->get_table("attrs");
+
+    for (const auto &x : *attrs) {
+        console::Log("Adding %s to %s", x.first.c_str(), n->name.c_str());
+        n->attributes.push_back(Attribute{x.first, x.second->as<std::string>()->get()});
+    }
+
+    return *name;
 }
 
 void FetchNodeTemplate(const std::string &f) {
     filesystem::Request("nodes/" + f, [](auto path, auto text) {
         if (text == None()) {
-            printf("Unable to load node %s\n", path);
+            printf("Unable to load node %s\n", path.c_str());
             return;
         }
         auto newNode  = new Node();
@@ -57,7 +119,7 @@ void FetchNodeTemplate(const std::string &f) {
                 InheritInternal(v, baseTemplate);
             }
         } else {
-            nodeTemplates[name];
+            nodeTemplates[name] = newNode;
         }
     });
 }
@@ -70,7 +132,7 @@ bool Init() {
         } else {
             auto table = cpptoml::parse_text(*text);
 
-            auto files = table->get_array_of<std::string>("files");
+            auto files = table->template get_array_of<std::string>("files");
 
             for (const auto &f : *files) {
                 // Now try and fetch all of these files
@@ -78,6 +140,34 @@ bool Init() {
             }
         }
     });
+
+    console::Register("node/templates", [](auto args) {
+        for (const auto &n : nodeTemplates) {
+            console::Log("%s - %s", n.first.c_str(), n.second->file.c_str());
+        }
+    });
+
+    console::Register("node/describe", [](auto args) {
+        auto it = nodeTemplates.find(args);
+        if (it == nodeTemplates.end()) {
+            console::Log("[error] Unable to find %s", args.c_str());
+            return;
+        }
+
+        auto node = it->second;
+
+        console::Log("Node %s (%s)", node->name.c_str(), node->file.c_str());
+        console::Log("- attrs");
+        for (const auto &[k, v] : node->attributes) {
+            console::Log("\t%s:%s", k.c_str(), v.c_str());
+        }
+        console::Log("- inherits");
+        for (const auto &v : node->inherited) {
+            console::Log("\t%s", v.c_str());
+        }
+    });
+
+    return true;
 }
 
 Option<Node *> Create(const std::string &name) {
@@ -90,18 +180,6 @@ Option<Node *> Create(const std::string &name) {
 
 void Destroy(Node *n) {
     delete n;
-}
-
-Node *InheritInternal(Node *n, Node *base) {
-    // TODO figure out how this works
-}
-
-Option<Node *> Inherit(Node *n, const std::string &name) {
-    auto v = nodeTemplates.find(name);
-
-    if (v != nodeTemplates.end()) return Some(InheritInternal(n, v->second));
-
-    return None();
 }
 
 } // namespace factory
