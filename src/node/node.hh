@@ -31,6 +31,12 @@ public:
     std::string value;
 };
 
+class Pin {
+public:
+    std::string name;
+    std::string type; // TODO change to int if too slow
+};
+
 class Node {
 public:
     Node();
@@ -38,8 +44,6 @@ public:
 
     // TODO figure out if this needs to actually be virtual
     virtual Node *Clone();
-
-    ed::NodeId id;
 
     std::vector<Attribute> attributes;
 
@@ -51,7 +55,11 @@ public:
     // What files were inherited or similar
     std::vector<std::string> inherited;
 
-    std::unordered_map<std::string, ed::PinId>;
+    // TODO i dont think that nodes should need to know
+    // or care about the specifics of their ids becuase they
+    // are managed by the canvas
+    std::vector<Pin> inputs;
+    std::vector<Pin> outputs;
 
     // For rendering
     virtual void Frame();

@@ -24,7 +24,6 @@ Node *Node::Clone() {
     n->file       = file;
     n->inherited  = inherited;
     n->attributes = attributes;
-    n->id         = id;
 
     return n;
 }
@@ -52,6 +51,12 @@ Node *InheritInternal(Node *n, Node *base) {
     n->inherited.push_back(base->name);
 
     // TODO pins (do we even want to inherit them?)
+
+    // TODO check for overlaps (although shouldnt be an issue)
+    // TODO in order to make sure there arent any problems we probably need our own pin mapping here
+    // so that the pins are kept unique
+    n->inputs.insert(n->inputs.end(), base->inputs.begin(), base->inputs.end());
+    n->outputs.insert(n->outputs.end(), base->outputs.begin(), base->inputs.end());
 
     return n;
 }
@@ -83,12 +88,24 @@ const std::string &ApplyTemplate(Node *n, const std::string &text) {
     const auto attrs = table->get_table("attrs");
 
     for (const auto &x : *attrs) {
-        console::Log("Adding %s to %s", x.first.c_str(), n->name.c_str());
+        console::Log("[attr] Adding %s to %s", x.first.c_str(), n->name.c_str());
         n->attributes.push_back(Attribute{x.first, x.second->as<std::string>()->get()});
     }
 
+    const auto inputs = table->get_table("inputs");
+
+    for (const auto &x : *inputs) {
+        console::Log("[inputs] Adding %s to %s", x.first.c_str(), n->name.c_str());
+        n->inputs.push_back(Pin{x.first, x.second->as<std::string>()->get()});
+    }
+
+    for (const auto &x : *table->get_table("outputs")) {
+        console::Log("[outputs] Adding %s to %s", x.first.c_str(), n->name.c_str());
+        n->outputs.push_back(Pin{x.first, x.second->as<std::string>()->get()});
+    }
+
     return *name;
-}
+} // namespace factory
 
 void FetchNodeTemplate(const std::string &f) {
     filesystem::Request("nodes/" + f, [](auto path, auto text) {
@@ -164,6 +181,20 @@ bool Init() {
         console::Log("- inherits");
         for (const auto &v : node->inherited) {
             console::Log("\t%s", v.c_str());
+        }
+        console::Log("- inputs");
+        for (const auto &v : node->inputs) {
+            console::Log("\t%s:%s", v.name.c_str(), v.type.c_str());
+        }
+        console::Log("- outputs");
+        for (const auto &v : node->outputs) {
+            console::Log("\t%s:%s", v.name.c_str(), v.type.c_str());
+        }
+    });
+
+    console::Register("node/describe-all", [](auto args) {
+        for (const auto &[k, v] : nodeTemplates) {
+            console::Execute("node/describe " + k);
         }
     });
 

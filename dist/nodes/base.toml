@@ -6,13 +6,9 @@ inherits = [
 ]
 
 # inputs and outputs are arrays of pairs of names and pin types
-[pins]
-inputs = [
-    ["test", "basic"]
-]
-outputs = [
+[inputs]
 
-]
+[outputs]
 
 # Any attributes that exist in this file are known to exist for all nodes
 

@@ -110,4 +110,4 @@ configure_file(input: 'dist/application.toml',
                output: 'application.toml',
                configuration : conf_data)
 
-run_command('python', 'tools/build/copy.py', 'dist/nodes', 'build/nodes')
+result = run_command('python', 'tools/build/copy.py', 'dist/nodes', 'build/nodes', check: true)
