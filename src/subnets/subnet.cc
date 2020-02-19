@@ -43,4 +43,43 @@ Option<std::vector<uptr>> Subnet::ListOutputs() {
         return None();
     }
 }
+
+Subnet::Subnet() {
+    inConnectors  = std::vector<connections::Connector>();
+    outConnectors = std::vector<connections::Connector>();
+
+    internalComponents = std::vector<uptr>();
+
+    subnetLevel = 0;
+}
+
+Subnet::Subnet(std::vector<connections::Connector> inC, std::vector<connections::Connector> outC, std::vector<uptr> interns, u16 subnetLvl) {
+    inConnectors  = inC; //vector::assign throws error here?
+    outConnectors = outC;
+
+    internalComponents = interns;
+
+    subnetLevel = subnetLvl;
+}
+//TODO
+//Add Pin methods
+/*
+Option<std::vector<Pin>> Subnet::ListInPins() {
+    if (inPins) {
+        return Some(inPins);
+    } else {
+        return None();
+    }
+}
+
+Option<std::vector<Pin>> Subnet::ListOutPins() {
+    if (outPins) {
+        return Some(inPins);
+    } else {
+        return None();
+    }
+}
+
+*/
+
 } // namespace subnet
